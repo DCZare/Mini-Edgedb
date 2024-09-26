@@ -1,0 +1,20 @@
+module default {
+  type Work {
+    optional pmid: float64;
+    required journal: str;
+    required doi: str;
+    optional title: str;
+    optional abstract: str;
+    multi authors: Author;
+    optional url: str;
+    optional cited_by_accounts_count: str;
+    optional cited_by_posts_count: str;
+    optional cited_by_tweeters_count: str;
+    optional cited_by_patents_count: str;
+    
+  }
+
+  type Author {
+    required name: str;
+  }
+}
