@@ -1,4 +1,3 @@
-// src/app/page.tsx
 import { createClient } from 'edgedb';
 import Head from 'next/head';
 
@@ -23,18 +22,32 @@ const HomePage = async () => {
         <title>Works Dashboard</title>
         <meta name="description" content="List of works" />
       </Head>
-      <h1>Works</h1>
+      <h1 style={{ textAlign: 'center' }}>Works</h1>
       {works.length === 0 ? (
         <p>No works found.</p>
       ) : (
-        <ul>
-          {works.map((work) => (
-            <li key={work.id}>
-              <h2>{work.title}</h2>
-              <p>DOI: {work.doi}</p>
-            </li>
-          ))}
-        </ul>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div style={{ flex: '1', marginRight: '20px' }}>
+            <h2 style={{ textAlign: 'center' }}>Title</h2>
+            <ul style={{ listStyleType: 'none', padding: 0 }}>
+              {works.map((work) => (
+                <li key={work.id} style={{ marginBottom: '10px' }}>
+                  {work.title}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div style={{ flex: '1' }}>
+            <h2 style={{ textAlign: 'center' }}>DOI</h2>
+            <ul style={{ listStyleType: 'none', padding: 0 }}>
+              {works.map((work) => (
+                <li key={work.id} style={{ marginBottom: '10px' }}>
+                  {work.doi}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       )}
     </div>
   );
