@@ -1,5 +1,6 @@
 import { createClient } from 'edgedb';
 import Head from 'next/head';
+import './globals.css'; // Ensure your CSS file is imported
 
 type Work = {
   id: string;
@@ -19,42 +20,29 @@ const HomePage = async () => {
   return (
     <div>
       <Head>
-        <title>Works Dashboard</title>
+        <title>CSV Manager</title>
         <meta name="description" content="List of works" />
       </Head>
-      <h1 style={{ textAlign: 'center', fontSize: '2.5rem', margin: '20px 0' }}>
-        CSV Manager
-      </h1>
-      {works.length === 0 ? (
-        <p>No works found.</p>
-      ) : (
-        <div style={{ display: 'flex', justifyContent: 'center', width: '80%', margin: '0 auto' }}>
-          <div style={{ flex: 1, marginRight: '20px' }}>
-            <h2 style={{ margin: '0' }}>Title</h2>
-            <ul style={{ listStyleType: 'none', padding: 0 }}>
-              {works.map((work) => (
-                <li key={work.id} style={{ marginBottom: '10px', height: '40px', display: 'flex', alignItems: 'center' }}>
-                  <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {work.title}
-                  </div>
-                </li>
-              ))}
-            </ul>
+      <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>CSV Manager</h1>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: '80%', maxWidth: '1300px' }}> {/* Adjusted maxWidth */}
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <h2 style={{ flex: '0 0 1100px', margin: 0 }}>Title</h2> {/* Set title width to 1100px */}
+            <h2 style={{ flex: '1', margin: 0 }}>DOI</h2>
           </div>
-          <div style={{ flex: 1 }}>
-            <h2 style={{ margin: '0' }}>DOI</h2>
-            <ul style={{ listStyleType: 'none', padding: 0 }}>
-              {works.map((work) => (
-                <li key={work.id} style={{ marginBottom: '10px', height: '40px', display: 'flex', alignItems: 'center' }}>
-                  <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {work.doi}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {works.length === 0 ? (
+            <p>No works found.</p>
+          ) : (
+            works.map((work) => (
+              <div key={work.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <p style={{ flex: '0 0 1100px', margin: '5px 0', wordWrap: 'break-word' }}>{work.title}</p>
+                <p style={{ flex: '1', margin: '5px 0' }}>{work.doi}</p>
+              </div>
+            ))
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
