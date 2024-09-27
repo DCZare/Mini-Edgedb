@@ -1,48 +1,43 @@
-import { NextPage } from 'next';
+// src/app/page.tsx
+import { createClient } from 'edgedb';
 import Head from 'next/head';
-import './globals.css'; // Ensure to import your CSS file
 
 type Work = {
   id: string;
   title: string;
   doi: string;
-  abs: string;
-}
+};
 
+const client = createClient();
 
-const HomePage: NextPage = () => {
-  const works = [
-    {
-      id: 'work1',
-      title: 'The First Work',
-      doi: '10.123',
-      abs: 'Information found here.'
-    },
-    {
-      id: 'work2',
-      title: 'Another One',
-      doi: '10.abc',
-      abs: 'Not bad, chief.',
-    }
-  ];
+const fetchWorks = async (): Promise<Work[]> => {
+  return await client.query(`SELECT Work { id, title, doi };`);
+};
+
+const HomePage = async () => {
+  const works = await fetchWorks();
 
   return (
-    <div className="centered-container">
+    <div>
       <Head>
-        <title>UBNS Bibliometrics Manager</title>
+        <title>Works Dashboard</title>
+        <meta name="description" content="List of works" />
       </Head>
-      <h1 className="centered-title">UBNS Bibliometrics Management Dashboard</h1>
-      <div>
-        {works.map(work => (
-          <div key={work.id}>
-            <h2 className="text-xl">{work.title}</h2> 
-            <h2 className='text'>{work.abs}</h2>
-            <h2 className='text'>{work.doi}</h2>
-          </div>
-        ))}
-      </div>
+      <h1>Works</h1>
+      {works.length === 0 ? (
+        <p>No works found.</p>
+      ) : (
+        <ul>
+          {works.map((work) => (
+            <li key={work.id}>
+              <h2>{work.title}</h2>
+              <p>DOI: {work.doi}</p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
-  )
-}
+  );
+};
 
 export default HomePage;
