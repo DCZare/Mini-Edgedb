@@ -1,6 +1,7 @@
 import { createClient } from 'edgedb';
 import Head from 'next/head';
-import './globals.css'; // Ensure your CSS file is imported
+import Link from 'next/link';
+import './globals.css';
 
 type Work = {
   id: string;
@@ -20,7 +21,7 @@ const HomePage = async () => {
   return (
     <div>
       <Head>
-        <title>CSV Manager</title>
+        <title>UBNS Bibliometrics Manager</title>
         <meta name="description" content="List of works" />
       </Head>
       <h1 style={{ textAlign: 'center', marginBottom: '20px', color: 'white' }}>CSV Manager</h1>
@@ -48,7 +49,7 @@ const HomePage = async () => {
               color: 'white'
             }}>Title</h2>
             <h2 style={{
-              flex: '0 0 880px', // Set a larger width for the DOI column (previously 440px)
+              flex: '0 0 880px',
               margin: 0,
               padding: '10px',
               borderLeft: '1px solid white',
@@ -56,7 +57,7 @@ const HomePage = async () => {
               textAlign: 'left',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
-              minWidth: '880px', // Ensures it doesn't get smaller than this
+              minWidth: '880px',
             }}>DOI</h2>
           </div>
 
@@ -71,16 +72,20 @@ const HomePage = async () => {
                 borderBottom: '1px solid white',
                 backgroundColor: 'black',
               }}>
-                <p style={{
+                <Link href={`/works/${work.id}`} style={{
                   flex: '0 0 1100px',
                   margin: '5px 0',
                   padding: '10px',
                   borderRight: '1px solid white',
                   wordWrap: 'break-word',
                   color: 'white',
-                }}>{work.title}</p>
+                  textDecoration: 'none',
+                  display: 'block', // Make the link a block element to cover the entire area
+                }}>
+                  {work.title}
+                </Link>
                 <p style={{
-                  flex: '0 0 880px', // Match the header width for the DOI column
+                  flex: '0 0 880px',
                   margin: '5px 0',
                   padding: '10px',
                   fontFamily: 'monospace',
@@ -88,7 +93,7 @@ const HomePage = async () => {
                   borderLeft: '1px solid white',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
-                  minWidth: '880px', // Ensures it doesn't get smaller than this
+                  minWidth: '880px',
                 }}>{work.doi}</p>
               </div>
             ))
