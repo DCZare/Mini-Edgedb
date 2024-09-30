@@ -33,10 +33,8 @@ async function getAuthorById(id: string): Promise<Author | null> {
     FILTER .id = <uuid>$id
     LIMIT 1
   `;
-  
-  // Explicitly type the result of the query
-  const result: Author[] = await client.query(query, { id });
-  
+
+  const result = await client.query<Author[]>(query, { id }); // Type assertion here
   return result.length > 0 ? result[0] : null;
 }
 
