@@ -1,7 +1,7 @@
-import { createClient } from 'edgedb';
-import Head from 'next/head';
-import Link from 'next/link';
-import './globals.css';
+'use client';
+import { useState, useEffect } from "react";
+import Link from 'next/link'; // Import Next.js's Link component
+import Search from "@/components/search/Search";
 
 type Work = {
   id: string;
@@ -9,99 +9,64 @@ type Work = {
   doi: string;
 };
 
-const client = createClient();
+export default function Home() {
+  const [searchValue, setSearchValue] = useState('');
+  const [searchResults, setSearchResults] = useState<Work[]>([]);
+  const [loading, setLoading] = useState(false);
 
-const fetchWorks = async (): Promise<Work[]> => {
-  return await client.query(`SELECT Work { id, title, doi };`);
-};
+  const fetchWorksByTitle = async (searchValue: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/searchWorks?q=${encodeURIComponent(searchValue)}`);
+      const results = await response.json();
+      setSearchResults(results);
+    } catch (error) {
+      console.error("Error fetching works:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-const HomePage = async () => {
-  const works = await fetchWorks();
+  const handleSearch = (value: string) => {
+    setSearchValue(value);
+  };
+
+  useEffect(() => {
+    if (searchValue.trim() !== '') {
+      fetchWorksByTitle(searchValue);
+    } else {
+      setSearchResults([]);
+    }
+  }, [searchValue]);
 
   return (
-    <div>
-      <Head>
-        <title>UBNS Bibliometrics Manager</title>
-        <meta name="description" content="List of works" />
-      </Head>
-      <h1 style={{ textAlign: 'center', marginBottom: '20px', color: 'white' }}>CSV Manager</h1>
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <div className="z-10 w-full max-w-md items-center justify-between font-mono text-sm lg:flex-inline">
+        <h1 className={'text-5xl my-10'}>UBNS Bibliometrics Search</h1>
+        <Search onSearch={handleSearch} />
+        <h2 className={'text-2xl mt-20 mx-2 underline'}>Searched for:</h2>
+        <p className={'text-2xl m-2'}> {searchValue}</p>
 
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <div style={{
-          width: '80%',
-          maxWidth: '1500px',
-          borderLeft: '1px solid white',
-          borderRight: '1px solid white',
-        }}>
-          {/* Table Headers */}
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            borderTop: '1px solid white',
-            borderBottom: '1px solid white',
-            backgroundColor: 'black',
-          }}>
-            <h2 style={{
-              flex: '0 0 1100px',
-              margin: 0,
-              padding: '10px',
-              borderRight: '1px solid white',
-              color: 'white'
-            }}>Title</h2>
-            <h2 style={{
-              flex: '0 0 880px',
-              margin: 0,
-              padding: '10px',
-              borderLeft: '1px solid white',
-              color: 'white',
-              textAlign: 'left',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              minWidth: '880px',
-            }}>DOI</h2>
-          </div>
-
-          {/* Table Data */}
-          {works.length === 0 ? (
-            <p style={{ color: 'white' }}>No works found.</p>
-          ) : (
-            works.map((work) => (
-              <div key={work.id} style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                borderBottom: '1px solid white',
-                backgroundColor: 'black',
-              }}>
-                <Link href={`/works/${work.id}`} style={{
-                  flex: '0 0 1100px',
-                  margin: '5px 0',
-                  padding: '10px',
-                  borderRight: '1px solid white',
-                  wordWrap: 'break-word',
-                  color: 'white',
-                  textDecoration: 'none',
-                  display: 'block', // Make the link a block element to cover the entire area
-                }}>
-                  {work.title}
+        {loading ? (
+          <p className="text-2xl m-2">Loading...</p>
+        ) : searchResults.length > 0 ? (
+          <div>
+            {searchResults.map((work) => (
+              <div key={work.id} className="my-4 p-4 border border-gray-300">
+                {/* Link to dynamic route for the work */}
+                <Link href={`/works/${work.id}`}>
+                  <h3 className="text-xl text-blue-600 underline cursor-pointer hover:text-blue-800">
+                    {work.title}
+                  </h3>
                 </Link>
-                <p style={{
-                  flex: '0 0 880px',
-                  margin: '5px 0',
-                  padding: '10px',
-                  fontFamily: 'monospace',
-                  color: 'white',
-                  borderLeft: '1px solid white',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  minWidth: '880px',
-                }}>{work.doi}</p>
+                <p className="text-sm text-gray-500">{work.doi}</p>
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-2xl m-2">No results found.</p>
+        )}
       </div>
-    </div>
+    </main>
   );
-};
-
-export default HomePage;
+}
