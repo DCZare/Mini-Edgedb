@@ -1,5 +1,4 @@
 import { createClient } from 'edgedb';
-import React from 'react';
 
 interface Work {
   id: string;
@@ -34,8 +33,9 @@ async function getAuthorById(id: string): Promise<Author | null> {
     FILTER .id = <uuid>$id
     LIMIT 1
   `;
-
-  const result = await client.query(query, { id }) as Author[];
+  
+  const result = await client.query<Author[]>(query, { id });
+  
   return result.length > 0 ? result[0] : null;
 }
 
@@ -75,7 +75,7 @@ export default async function AuthorPage({ params }: { params: { id: string } })
   );
 }
 
-const styles: { [key: string]: React.CSSProperties } = {
+const styles = {
   container: {
     padding: '40px 20px',
     maxWidth: '800px',
