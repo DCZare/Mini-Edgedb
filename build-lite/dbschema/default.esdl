@@ -1,3 +1,5 @@
+using extension edgeql_http;
+
 module default {
   type Work {
     optional pmid: float64;
