@@ -14,16 +14,9 @@ type Work = {
 type Author = {
   id: string;
   name: string;
-<<<<<<< HEAD
-  works: Work[];
-};
-
-type SearchResult = Work | Author;
-=======
 };
 
 type SearchResult = Work | Author; // Combined type for works and authors
->>>>>>> 57e426a (Author Search)
 
 export default function Home() {
   const [searchValue, setSearchValue] = useState('');
@@ -55,10 +48,6 @@ export default function Home() {
     }
   }, [searchValue]);
 
-  const isWork = (result: SearchResult): result is Work => {
-    return (result as Work).title !== undefined;
-  };
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-md items-center justify-between font-mono text-sm lg:flex-inline">
@@ -73,21 +62,12 @@ export default function Home() {
           <div>
             {searchResults.map((result) => (
               <div key={result.id} className="my-4 p-4 border border-gray-300">
-<<<<<<< HEAD
-                <Link href={isWork(result) ? `/works/${result.id}` : `/author/${result.id}`}>
-                  <h3 className="text-xl text-blue-600 underline cursor-pointer hover:text-blue-800">
-                    {isWork(result) ? result.title : result.name}
-                  </h3>
-                </Link>
-                {isWork(result) && (
-=======
                 <Link href={result.hasOwnProperty('doi') ? `/works/${result.id}` : `/author/${result.id}`}>
                   <h3 className="text-xl text-blue-600 underline cursor-pointer hover:text-blue-800">
                     {result.hasOwnProperty('title') ? result.title : result.name}
                   </h3>
                 </Link>
                 {result.hasOwnProperty('doi') && (
->>>>>>> 57e426a (Author Search)
                   <p className="text-sm text-gray-500">{result.doi}</p>
                 )}
               </div>
