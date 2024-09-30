@@ -1,15 +1,21 @@
 import { createClient } from 'edgedb';
 
+interface Author {
+  id: string;
+  name: string;
+}
+
 interface Work {
   id: string;
   title: string;
   doi: string;
   journal: string;
   abstract: string | null;
-  cited_by_accounts_count: number | null; // Change to number
-  cited_by_posts_count: number | null; // Change to number
-  cited_by_tweeters_count: number | null; // Change to number
-  cited_by_patents_count: number | null; // Change to number
+  cited_by_accounts_count: number | null;
+  cited_by_posts_count: number | null;
+  cited_by_tweeters_count: number | null;
+  cited_by_patents_count: number | null;
+  authors: Author[];  // Include authors in the Work interface
 }
 
 const client = createClient();
@@ -25,7 +31,11 @@ async function getWorkById(id: string): Promise<Work | null> {
       cited_by_accounts_count,
       cited_by_posts_count,
       cited_by_tweeters_count,
-      cited_by_patents_count
+      cited_by_patents_count,
+      authors: {
+        id,
+        name
+      }
     }
     FILTER .id = <uuid>$id
     LIMIT 1
@@ -80,6 +90,22 @@ export default async function WorksPage({ params }: { params: { id: string } }) 
             <li style={styles.citationItem}>Tweets Mentioned: {tweetsMentioned}</li>
             <li style={styles.citationItem}>Patents Cited: {patentsCited}</li>
           </ul>
+        </div>
+        <div style={styles.section}>
+          <h2 style={styles.label}>Authors:</h2>
+          {work.authors.length > 0 ? (
+            <ul style={styles.authorList}>
+              {work.authors.map((author) => (
+                <li key={author.id} style={styles.authorItem}>
+                  <a href={`/author/${author.id}`} style={styles.link}>
+                    {author.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p style={styles.noAuthors}>No authors found for this work.</p>
+          )}
         </div>
       </div>
     </main>
@@ -139,6 +165,17 @@ const styles = {
     marginBottom: '5px',
     fontSize: '1rem',
     color: '#666',
+  },
+  authorList: {
+    paddingLeft: '20px',
+    listStyleType: 'disc',
+  },
+  authorItem: {
+    marginBottom: '10px',
+  },
+  noAuthors: {
+    fontSize: '1rem',
+    color: '#e74c3c',
   },
   notFound: {
     textAlign: 'center',

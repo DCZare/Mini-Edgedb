@@ -11,10 +11,10 @@ module default {
     optional cited_by_posts_count: str;
     optional cited_by_tweeters_count: str;
     optional cited_by_patents_count: str;
-    
   }
 
   type Author {
     required name: str;
+    multi works := (SELECT Work FILTER Work.authors = Author);
   }
 }

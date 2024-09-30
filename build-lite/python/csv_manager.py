@@ -31,7 +31,10 @@ def main():
         with open(filepath, 'r') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                author_names = [name.strip() for name in row['authors'].split(',')]
+                # Remove square brackets and properly split authors
+                author_names = row['authors'].strip("[]").split(',')
+                author_names = [name.strip() for name in author_names]  # Ensure names are trimmed
+                
                 author_ids = []
                 for author_name in author_names:
                     author_id = get_or_create_author(client, author_name)
@@ -53,7 +56,19 @@ def main():
                         cited_by_patents_count := <str>$cited_by_patents_count,
                     }
                     '''
-                    client.query(query, pmid=float(row['pmid']), journal=row['journal'], doi=row['doi'], title=row['title'], url=row['url'], cited_by_accounts_count=row['cited_by_accounts_count'], cited_by_posts_count=row['cited_by_posts_count'], cited_by_tweeters_count=row['cited_by_tweeters_count'], cited_by_patents_count=row['cited_by_patents_count'] , abstract=row['abstract'], author_ids=author_ids)
+                    client.query(query, 
+                        pmid=float(row['pmid']), 
+                        journal=row['journal'], 
+                        doi=row['doi'], 
+                        title=row['title'], 
+                        url=row['url'], 
+                        cited_by_accounts_count=row['cited_by_accounts_count'], 
+                        cited_by_posts_count=row['cited_by_posts_count'], 
+                        cited_by_tweeters_count=row['cited_by_tweeters_count'], 
+                        cited_by_patents_count=row['cited_by_patents_count'], 
+                        abstract=row['abstract'], 
+                        author_ids=author_ids
+                    )
                     print(f"Inserted Work with pmid: {row['pmid']}")
                 except ValueError as ve:
                     print(f"ValueError for row: {row} | Error: {ve}")
@@ -68,5 +83,3 @@ def main():
 if __name__ == "__main__":
     main()
     print('done :)')
-
-
