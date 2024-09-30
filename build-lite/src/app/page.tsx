@@ -1,5 +1,3 @@
-// src/app/page.tsx
-
 'use client';
 import { useState, useEffect } from "react";
 import Link from 'next/link';
@@ -14,23 +12,24 @@ type Work = {
 type Author = {
   id: string;
   name: string;
+  works: Work[];
 };
 
-type SearchResult = Work | Author; // Combined type for works and authors
+type SearchResult = Work | Author;
 
 export default function Home() {
   const [searchValue, setSearchValue] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchSearchResults = async (searchValue: string) => {
+  const fetchWorksByTitle = async (searchValue: string) => {
     try {
       setLoading(true);
       const response = await fetch(`/api/searchWorks?q=${encodeURIComponent(searchValue)}`);
       const results = await response.json();
       setSearchResults(results);
     } catch (error) {
-      console.error("Error fetching search results:", error);
+      console.error("Error fetching works:", error);
     } finally {
       setLoading(false);
     }
@@ -42,11 +41,15 @@ export default function Home() {
 
   useEffect(() => {
     if (searchValue.trim() !== '') {
-      fetchSearchResults(searchValue);
+      fetchWorksByTitle(searchValue);
     } else {
       setSearchResults([]);
     }
   }, [searchValue]);
+
+  const isWork = (result: SearchResult): result is Work => {
+    return (result as Work).title !== undefined;
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -54,7 +57,7 @@ export default function Home() {
         <h1 className={'text-5xl my-10'}>UBNS Bibliometrics Search</h1>
         <Search onSearch={handleSearch} />
         <h2 className={'text-2xl mt-20 mx-2 underline'}>Searched for:</h2>
-        <p className={'text-2xl m-2'}>{searchValue}</p>
+        <p className={'text-2xl m-2'}> {searchValue}</p>
 
         {loading ? (
           <p className="text-2xl m-2">Loading...</p>
@@ -62,12 +65,12 @@ export default function Home() {
           <div>
             {searchResults.map((result) => (
               <div key={result.id} className="my-4 p-4 border border-gray-300">
-                <Link href={result.hasOwnProperty('doi') ? `/works/${result.id}` : `/author/${result.id}`}>
+                <Link href={isWork(result) ? `/works/${result.id}` : `/author/${result.id}`}>
                   <h3 className="text-xl text-blue-600 underline cursor-pointer hover:text-blue-800">
-                    {result.hasOwnProperty('title') ? result.title : result.name}
+                    {isWork(result) ? result.title : result.name}
                   </h3>
                 </Link>
-                {result.hasOwnProperty('doi') && (
+                {isWork(result) && (
                   <p className="text-sm text-gray-500">{result.doi}</p>
                 )}
               </div>
