@@ -10,7 +10,7 @@ interface Work {
 interface Author {
   id: string;
   name: string;
-  works: Work[]; // Array of works associated with the author
+  works: Work[];
 }
 
 const client = createClient();
@@ -33,7 +33,10 @@ async function getAuthorById(id: string): Promise<Author | null> {
     FILTER .id = <uuid>$id
     LIMIT 1
   `;
-  const result = await client.query(query, { id });
+  
+  // Explicitly type the result of the query
+  const result: Author[] = await client.query(query, { id });
+  
   return result.length > 0 ? result[0] : null;
 }
 
