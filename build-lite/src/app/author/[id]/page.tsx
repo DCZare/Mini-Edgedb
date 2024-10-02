@@ -34,7 +34,7 @@ async function getAuthorById(id: string): Promise<Author | null> {
     LIMIT 1
   `;
   
-  const result = await client.query<Author[]>(query, { id });
+  const result = await client.query<Author>(query, { id });
   
   return result.length > 0 ? result[0] : null;
 }
