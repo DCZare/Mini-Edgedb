@@ -33,9 +33,7 @@ async function getAuthorById(id: string): Promise<Author | null> {
     FILTER .id = <uuid>$id
     LIMIT 1
   `;
-  
-  const result = await client.query<Author>(query, { id });
-  
+    
   return await client.querySingle<Author>(query, { id });
 }
 
