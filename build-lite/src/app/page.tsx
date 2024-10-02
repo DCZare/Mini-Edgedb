@@ -1,5 +1,3 @@
-// src/app/page.tsx
-
 'use client';
 import { useState, useEffect } from "react";
 import Link from 'next/link';
@@ -62,13 +60,13 @@ export default function Home() {
           <div>
             {searchResults.map((result) => (
               <div key={result.id} className="my-4 p-4 border border-gray-300">
-                <Link href={result.hasOwnProperty('doi') ? `/works/${result.id}` : `/author/${result.id}`}>
+                <Link href={'doi' in result ? `/works/${result.id}` : `/author/${result.id}`}>
                   <h3 className="text-xl text-blue-600 underline cursor-pointer hover:text-blue-800">
-                    {result.hasOwnProperty('title') ? result.title : result.name}
+                    {'title' in result ? (result as Work).title : (result as Author).name}
                   </h3>
                 </Link>
-                {result.hasOwnProperty('doi') && (
-                  <p className="text-sm text-gray-500">{result.doi}</p>
+                {'doi' in result && (
+                  <p className="text-sm text-gray-500">{(result as Work).doi}</p>
                 )}
               </div>
             ))}
