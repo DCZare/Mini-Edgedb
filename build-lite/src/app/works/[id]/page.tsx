@@ -15,7 +15,7 @@ interface Work {
   cited_by_posts_count: number | null;
   cited_by_tweeters_count: number | null;
   cited_by_patents_count: number | null;
-  authors: Author[];  // Include authors in the Work interface
+  authors: Author[];  
 }
 
 const client = createClient();
@@ -126,7 +126,7 @@ const styles = {
     fontWeight: 'bold',
     color: '#333',
     marginBottom: '20px',
-    textAlign: 'center',
+    textAlign: 'center' as const, 
     textTransform: 'uppercase',
     letterSpacing: '0.05em',
   },
@@ -178,7 +178,7 @@ const styles = {
     color: '#e74c3c',
   },
   notFound: {
-    textAlign: 'center',
+    textAlign: 'center' as const,  
     fontSize: '2rem',
     color: '#e74c3c',
   },
