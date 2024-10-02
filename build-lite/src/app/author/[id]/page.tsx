@@ -1,5 +1,12 @@
 import { createClient } from 'edgedb';
 
+interface Work {
+  id: string;
+  title: string;
+  doi: string;
+  journal: string;
+}
+
 interface Author {
   id: string;
   name: string;
@@ -9,16 +16,18 @@ const client = createClient();
 
 async function getAuthorById(id: string): Promise<Author | null> {
   const query = `
-  SELECT Work {
-    id,
-    title,
-    authors: {
+    select Author {
       id,
-      name
+      name,
+      works := .<author[is Work] {
+        id,
+        title,
+        doi,
+        journal,
+      },
     }
-  }
-  FILTER .id = <uuid>$id
-  LIMIT 1
+  filter .id = <uuid>$id
+  limit 1;
   `;
     
   return await client.querySingle<Author>(query, { id });
