@@ -127,7 +127,7 @@ const styles = {
     color: '#333',
     marginBottom: '20px',
     textAlign: 'center' as const, 
-    textTransform: 'uppercase',
+    textTransform: 'uppercase' as const,
     letterSpacing: '0.05em',
   },
   infoContainer: {
