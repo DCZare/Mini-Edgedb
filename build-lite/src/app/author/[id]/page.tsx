@@ -10,7 +10,6 @@ interface Work {
 interface Author {
   id: string;
   name: string;
-  works: Work[];
 }
 
 const client = createClient();
