@@ -1,12 +1,5 @@
 import { createClient } from 'edgedb';
 
-interface Work {
-  id: string;
-  title: string;
-  doi: string;
-  journal: string;
-}
-
 interface Author {
   id: string;
   name: string;
