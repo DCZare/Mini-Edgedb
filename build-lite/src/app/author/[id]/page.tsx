@@ -1,4 +1,5 @@
 import { createClient } from 'edgedb';
+import Link from 'next/link';
 
 interface Work {
   id: string;
@@ -13,63 +14,27 @@ interface Author {
   works: Work[];
 }
 
+type SearchResult = Work | Author;
+
 const client = createClient();
 
-async function getAuthorById(id: string): Promise<Author | null> {
-  const query = `
-    SELECT Author {
-      id,
-      name,
-      works := (
-        SELECT Work {
-          id,
-          title,
-          doi,
-          journal
-        } 
-        FILTER .authors.id = <uuid>$id
-      )
-    }
-    FILTER .id = <uuid>$id
-    LIMIT 1
-  `;
-    
-  return await client.querySingle<Author>(query, { id });
+async function search(query: string): Promise<SearchResult[]> {
+  return []; 
 }
 
-export default async function AuthorPage({ params }: { params: { id: string } }) {
-  const author = await getAuthorById(params.id);
-
-  if (!author) {
-    return (
-      <main style={styles.container}>
-        <h2 style={styles.notFound}>Author not found</h2>
-      </main>
-    );
-  }
+export default async function SearchPage() {
+  const results = await search('your search query');
 
   return (
-    <main style={styles.container}>
-      <h1 style={styles.title}>{author.name}</h1>
-      <div style={styles.infoContainer}>
-        <div style={styles.section}>
-          <h2 style={styles.label}>Works by {author.name}:</h2>
-          {author.works.length > 0 ? (
-            <ul style={styles.workList}>
-              {author.works.map((work) => (
-                <li key={work.id} style={styles.workItem}>
-                  <a href={`/works/${work.id}`} style={styles.link}>
-                    {work.title} ({work.journal})
-                  </a>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p style={styles.noWorks}>No works found for this author.</p>
-          )}
-        </div>
-      </div>
-    </main>
+    <div>
+      {results.map((result) => (
+        <Link key={result.id} href={('doi' in result) ? `/works/${result.id}` : `/author/${result.id}`}>
+          <h3 className="text-xl text-blue-600 underline cursor-pointer hover:text-blue-800">
+            {'title' in result ? result.title : result.name}
+          </h3>
+        </Link>
+      ))}
+    </div>
   );
 }
 
@@ -130,4 +95,3 @@ const styles = {
     transition: 'color 0.3s ease',
   },
 } as const;
-
