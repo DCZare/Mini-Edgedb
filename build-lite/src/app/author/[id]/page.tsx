@@ -37,8 +37,13 @@ async function getAuthorById(id: string): Promise<Author | null> {
   return await client.querySingle<Author>(query, { id });
 }
 
-const isWork = (item: any): item is Work => {
-  return item && typeof item.title === 'string' && typeof item.journal === 'string';
+const isWork = (item: unknown): item is Work => {
+  return (
+    typeof item === 'object' &&
+    item !== null &&
+    'title' in item &&
+    'journal' in item
+  );
 };
 
 export default async function AuthorPage({ params }: { params: { id: string } }) {
