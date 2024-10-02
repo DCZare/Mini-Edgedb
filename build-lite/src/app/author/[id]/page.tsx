@@ -1,4 +1,5 @@
 import { createClient } from 'edgedb';
+import Link from 'next/link';
 
 interface Work {
   id: string;
@@ -37,15 +38,6 @@ async function getAuthorById(id: string): Promise<Author | null> {
   return await client.querySingle<Author>(query, { id });
 }
 
-const isWork = (item: unknown): item is Work => {
-  return (
-    typeof item === 'object' &&
-    item !== null &&
-    'title' in item &&
-    'journal' in item
-  );
-};
-
 export default async function AuthorPage({ params }: { params: { id: string } }) {
   const author = await getAuthorById(params.id);
 
@@ -68,7 +60,7 @@ export default async function AuthorPage({ params }: { params: { id: string } })
               {author.works.map((work) => (
                 <li key={work.id} style={styles.workItem}>
                   <a href={`/works/${work.id}`} style={styles.link}>
-                    {isWork(work) ? work.title : 'Unknown Work'}
+                    {work.title} ({work.journal})
                   </a>
                 </li>
               ))}
