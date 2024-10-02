@@ -23,7 +23,14 @@ def get_or_create_author(client, author_name):
         return created_author[0].id
 
 def main():
+    
     client = edgedb.create_client()
+    
+    con = client._iter_coroutine(client._impl.acquire())
+    #print(con._params.__dict__)
+    print('----------------------------------------')
+    print(os.getenv('EDGEDB_INSTANCE'))
+
     cd = os.getcwd()
     filepath = os.path.join(cd, 'data', 'citations.csv')
 
@@ -69,8 +76,10 @@ def main():
                         abstract=row['abstract'], 
                         author_ids=author_ids
                     )
-                    print(f"Inserted Work with pmid: {row['pmid']}")
+                    #print(f"Inserted Work with pmid: {row['pmid']}")
+                    
                 except ValueError as ve:
+                    print('----------------------------------------')
                     print(f"ValueError for row: {row} | Error: {ve}")
                 except Exception as e:
                     print(f"Error for row: {row} | Error: {e}")
