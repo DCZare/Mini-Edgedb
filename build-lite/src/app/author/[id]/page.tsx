@@ -73,7 +73,7 @@ export default async function AuthorPage({ params }: { params: { id: string } })
   );
 }
 
-const styles: { [key: string]: React.CSSProperties } = {
+const styles = {
   container: {
     padding: '40px 20px',
     maxWidth: '800px',
@@ -119,7 +119,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: '#e74c3c',
   },
   notFound: {
-    textAlign: 'center' as 'center',
+    textAlign: 'center',
     fontSize: '2rem',
     color: '#e74c3c',
   },
@@ -129,4 +129,5 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontWeight: 'bold',
     transition: 'color 0.3s ease',
   },
-};
+} as const;
+
