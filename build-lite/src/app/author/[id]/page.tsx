@@ -1,5 +1,4 @@
 import { createClient } from 'edgedb';
-import Link from 'next/link';
 
 interface Work {
   id: string;
