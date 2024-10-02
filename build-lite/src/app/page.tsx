@@ -16,7 +16,7 @@ type Author = {
   name: string;
 };
 
-type SearchResult = Work | Author; // Combined type for works and authors
+type SearchResult = Work | Author; 
 
 export default function Home() {
   const [searchValue, setSearchValue] = useState('');
