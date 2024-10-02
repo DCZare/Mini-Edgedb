@@ -73,7 +73,7 @@ export default async function AuthorPage({ params }: { params: { id: string } })
   );
 }
 
-const styles = {
+const styles: { [key: string]: React.CSSProperties } = {
   container: {
     padding: '40px 20px',
     maxWidth: '800px',
@@ -119,7 +119,7 @@ const styles = {
     color: '#e74c3c',
   },
   notFound: {
-    textAlign: 'center',
+    textAlign: 'center' as 'center', // Using type assertion for textAlign
     fontSize: '2rem',
     color: '#e74c3c',
   },
@@ -129,4 +129,4 @@ const styles = {
     fontWeight: 'bold',
     transition: 'color 0.3s ease',
   },
-} as const;
+};
