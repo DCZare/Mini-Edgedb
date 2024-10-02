@@ -1,9 +1,16 @@
 import { createClient } from 'edgedb';
 
+interface Work {
+  id: string;
+  title: string;
+  doi: string;
+  journal: string;
+}
 
 interface Author {
   id: string;
   name: string;
+  works: Work[];
 }
 
 const client = createClient();
@@ -123,3 +130,4 @@ const styles = {
     transition: 'color 0.3s ease',
   },
 } as const;
+
