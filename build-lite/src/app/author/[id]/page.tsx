@@ -13,8 +13,6 @@ interface Author {
   works: Work[];
 }
 
-type SearchResult = Author | Work;
-
 const client = createClient();
 
 async function getAuthorById(id: string): Promise<Author | null> {
@@ -39,6 +37,10 @@ async function getAuthorById(id: string): Promise<Author | null> {
   return await client.querySingle<Author>(query, { id });
 }
 
+const isWork = (result: Work | Author): result is Work => {
+  return (result as Work).title !== undefined;
+};
+
 export default async function AuthorPage({ params }: { params: { id: string } }) {
   const author = await getAuthorById(params.id);
 
@@ -61,7 +63,7 @@ export default async function AuthorPage({ params }: { params: { id: string } })
               {author.works.map((work) => (
                 <li key={work.id} style={styles.workItem}>
                   <a href={`/works/${work.id}`} style={styles.link}>
-                    {work.title} ({work.journal})
+                    {isWork(work) ? work.title : work.journal}
                   </a>
                 </li>
               ))}
@@ -132,7 +134,3 @@ const styles = {
     transition: 'color 0.3s ease',
   },
 } as const;
-
-const isWork = (result: SearchResult): result is Work => {
-  return (result as Work).title !== undefined;
-};
