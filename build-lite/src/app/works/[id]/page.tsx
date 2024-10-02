@@ -40,8 +40,8 @@ async function getWorkById(id: string): Promise<Work | null> {
     FILTER .id = <uuid>$id
     LIMIT 1
   `;
-  const result = await client.query(query, { id });
-  return result.length > 0 ? result[0] : null;
+  return await client.querySingle<Work>(query, { id });
+
 }
 
 export default async function WorksPage({ params }: { params: { id: string } }) {
