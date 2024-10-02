@@ -13,7 +13,7 @@ interface Author {
   works: Work[];
 }
 
-type SearchResult = Author | Work; 
+type SearchResult = Author | Work;
 
 const client = createClient();
 
@@ -134,5 +134,5 @@ const styles = {
 } as const;
 
 const isWork = (result: SearchResult): result is Work => {
-  return (result as Work).title !== undefined; 
+  return (result as Work).title !== undefined;
 };
