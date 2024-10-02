@@ -36,7 +36,7 @@ async function getAuthorById(id: string): Promise<Author | null> {
   
   const result = await client.query<Author>(query, { id });
   
-  return result.length > 0 ? result[0] : null;
+  return result
 }
 
 export default async function AuthorPage({ params }: { params: { id: string } }) {
