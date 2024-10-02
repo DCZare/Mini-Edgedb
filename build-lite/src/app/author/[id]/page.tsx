@@ -16,21 +16,16 @@ const client = createClient();
 
 async function getAuthorById(id: string): Promise<Author | null> {
   const query = `
-    SELECT Author {
+  SELECT Work {
+    id,
+    title,
+    authors: {
       id,
-      name,
-      works := (
-        SELECT Work {
-          id,
-          title,
-          doi,
-          journal
-        } 
-        FILTER .authors.id = <uuid>$id
-      )
+      name
     }
-    FILTER .id = <uuid>$id
-    LIMIT 1
+  }
+  FILTER .id = <uuid>$id
+  LIMIT 1
   `;
     
   return await client.querySingle<Author>(query, { id });
