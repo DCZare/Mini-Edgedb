@@ -37,10 +37,6 @@ async function getAuthorById(id: string): Promise<Author | null> {
   return await client.querySingle<Author>(query, { id });
 }
 
-const isWork = (result: Work | Author): result is Work => {
-  return (result as Work).title !== undefined;
-};
-
 export default async function AuthorPage({ params }: { params: { id: string } }) {
   const author = await getAuthorById(params.id);
 
@@ -63,7 +59,7 @@ export default async function AuthorPage({ params }: { params: { id: string } })
               {author.works.map((work) => (
                 <li key={work.id} style={styles.workItem}>
                   <a href={`/works/${work.id}`} style={styles.link}>
-                    {isWork(work) ? work.title : work.journal}
+                    {work.title} ({work.journal})
                   </a>
                 </li>
               ))}
