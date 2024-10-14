@@ -14,7 +14,11 @@ module default {
     optional cited_by_tweeters_count: str;
     optional cited_by_patents_count: str;
     optional cited_by_fbwalls_count: str;
-    
+    optional year: str;
+    optional author_position: str;
+    optional institution_name: str;
+
+
   }
 
   type Author {
